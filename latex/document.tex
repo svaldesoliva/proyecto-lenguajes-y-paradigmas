@@ -7,14 +7,20 @@
 % Temas
 \usetheme{Madrid}
 \usecolortheme{beaver}
-
+\AtBeginSection[]
+{
+	\begin{frame}[plain]
+		\centering
+		\Huge \bfseries \insertsection
+	\end{frame}
+}
 
 
 \begin{document}
 	
 	\author[Valdés, Vásquez, Gutierrez]{Simón Valdés Oliva \and Martín Vásquez \and Alejandro Gutierrez}
 	\title[Lenguaje Rust]{Lenguaje Rust}
-	\subtitle{Características y Paradigmas}
+	\subtitle{Lenguajes y Paradigmas de Programación}
 	\institute[UAI]{Universidad Adolfo Ibáñez}
 	\date{\today}
 	\subject{Lenguajes y Paradigmas de Programación}
@@ -44,18 +50,24 @@
 	
 	% --- 2. PARADIGMAS ---
 	\section{Paradigmas Soportados}
-	\begin{frame}{Un Lenguaje Multiparadigma}
+	\begin{frame}{Paradigmas Soportados}
 		Rust soporta activamente:
 		
 		\begin{itemize}
-			\item \textbf{Imperativo/Procedimental:} Ejecución línea por línea.
-			\item \textbf{Funcional:} Uso de cierres, iteradores de orden superior y pattern matching.
+			\item \textbf{Imperativo/Procedimental}.
+			\item \textbf{Funcional}.
 			\item \textbf{Orientado a Objetos (Limitado):} Permite encapsulamiento e interfaces mediante \textit{traits}, pero \textbf{no admite herencia tradicional\footnote{Rust prefiere la composición sobre la herencia.}} de clases.
 		\end{itemize}
 	\end{frame}
 	
+	\begin{frame}{Imperativo}
+		
+	\end{frame}
+	
+	
 	% --- 3. CARACTERÍSTICAS CLAVE ---
 	\section{Características Principales}
+	
 	\begin{frame}{El Sistema de Ownership}
 		La innovación más grande de Rust es cómo maneja la memoria \textbf{sin usar un Garbage Collector}.
 		
@@ -72,8 +84,8 @@
 	
 	% --- 4. ECOSISTEMA ---
 	\section{Ecosistema y Herramientas}
-	\begin{frame}{Cargo}
-		Rust viene con herramientas integradas:
+	\begin{frame}{Ecosistema y Herramientas}
+		Rust viene con las siguientes herramientas:
 		
 		\begin{itemize}
 			\item \textbf{Cargo:} Es el gestor de paquetes y sistema de compilación de Rust. Permite compilar código, correr pruebas y generar documentación.
@@ -82,6 +94,10 @@
 		\end{itemize}
 	\end{frame}
 	
+	
+	
+	
+	
 	% --- 5. CONCLUSIÓN ---
 	\section{Conclusión}
 	\begin{frame}{¿Por qué elegir Rust?}
@@ -89,9 +105,9 @@
 			\column{0.5\textwidth}
 			\textbf{Ventajas}
 			\begin{itemize}
-				\item Rendimiento extremo (similar a C++).
+				\item Rendimiento muy alto (similar a C++).
 				\item Seguridad de memoria garantizada en tiempo de compilación.
-				\item Concurrencia sin miedo.
+				\item Concurrencia.
 			\end{itemize}
 			
 			\column{0.5\textwidth}
@@ -99,16 +115,13 @@
 			\begin{itemize}
 				\item Curva de aprendizaje elevada.
 				\item Tiempos de compilación más lentos.
-				\item El compilador es muy estricto (te obligará a escribir código seguro).
+				\item El compilador es muy estricto, pero te obligará a escribir código seguro.
 			\end{itemize}
 		\end{columns}
 	\end{frame}
 	
 	\begin{frame}[plain]
-		\centering
-		\Huge \textbf{¡Gracias!} \\
-		\vspace{1cm}
-		\Large ¿Preguntas?
+
 	\end{frame}
 	
 \end{document}
