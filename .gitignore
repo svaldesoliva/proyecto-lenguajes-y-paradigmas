@@ -1,3 +1,9 @@
 *.pdf
 .DS_Store
 
+/latex/document.aux
+/latex/document.log
+/latex/document.out
+/latex/document.pdf
+/latex/document.synctex.gz
+/latex/document.toc
