@@ -1,26 +1,114 @@
-\documentclass[11pt]{beamer}
+\documentclass[11pt, aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage[spanish]{babel}
-\usetheme{Antibes}
+
+% Temas
+\usetheme{Madrid}
+\usecolortheme{beaver}
+
+
+
 \begin{document}
-	\author{Simón Valdés Oliva}
-	\title{Lenguaje Rust}
-	%\subtitle{}
-	\logo{
-	\includegraphics{logo.png}
-	}
-	\institute{Universidad Adolfo Ibáñez}
+	
+	\author[Valdés, Vásquez, Gutierrez]{Simón Valdés Oliva \and Martín Vásquez \and Alejandro Gutierrez}
+	\title[Lenguaje Rust]{Lenguaje Rust}
+	\subtitle{Características y Paradigmas}
+	\institute[UAI]{Universidad Adolfo Ibáñez}
 	\date{\today}
 	\subject{Lenguajes y Paradigmas de Programación}
-	%\setbeamercovered{transparent}
-	%\setbeamertemplate{navigation symbols}{}
+	
+	% titulo
 	\begin{frame}[plain]
 		\maketitle
 	\end{frame}
 	
-	\begin{frame}
-		\frametitle{}
+	% --- ÍNDICE ---
+	\begin{frame}{Contenidos}
+		\tableofcontents
 	\end{frame}
+	
+	% --- 1. INTRODUCCIÓN ---
+	\section{Introducción a Rust}
+	\begin{frame}{¿Qué es Rust?}
+		\begin{block}{Definición}
+			Rust es un lenguaje de programación de sistemas compilado, diseñado para ser seguro, concurrente y práctico. Fue patrocinado originalmente por Mozilla Research en 2010 y actualmente es impulsado por la \textit{Rust Foundation}.
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Propósito principal:}
+		Resolver problemas comunes en lenguajes como C y C++, especialmente los relacionados con la gestión de memoria, sin sacrificar el rendimiento.
+	\end{frame}
+	
+	% --- 2. PARADIGMAS ---
+	\section{Paradigmas Soportados}
+	\begin{frame}{Un Lenguaje Multiparadigma}
+		Rust soporta activamente:
+		
+		\begin{itemize}
+			\item \textbf{Imperativo/Procedimental:} Ejecución línea por línea.
+			\item \textbf{Funcional:} Uso de cierres, iteradores de orden superior y pattern matching.
+			\item \textbf{Orientado a Objetos (Limitado):} Permite encapsulamiento e interfaces mediante \textit{traits}, pero \textbf{no admite herencia tradicional\footnote{Rust prefiere la composición sobre la herencia.}} de clases.
+		\end{itemize}
+	\end{frame}
+	
+	% --- 3. CARACTERÍSTICAS CLAVE ---
+	\section{Características Principales}
+	\begin{frame}{El Sistema de Ownership}
+		La innovación más grande de Rust es cómo maneja la memoria \textbf{sin usar un Garbage Collector}.
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Ownership}
+			\begin{enumerate}
+				\item Cada valor en Rust tiene una variable que es su \textit{propietario} (owner).
+				\item Solo puede haber un propietario a la vez.
+				\item Cuando el propietario sale del scope, el valor se elimina de la memoria automáticamente.
+			\end{enumerate}
+		\end{block}
+	\end{frame}
+	
+	% --- 4. ECOSISTEMA ---
+	\section{Ecosistema y Herramientas}
+	\begin{frame}{Cargo: El corazón del ecosistema}
+		Rust viene con herramientas de primer nivel integradas:
+		
+		\begin{itemize}
+			\item \textbf{Cargo:} Es el gestor de paquetes y sistema de construcción (build system) de Rust. Permite compilar código, correr pruebas y generar documentación.
+			\item \textbf{Crates.io:} Es el registro oficial de paquetes (llamados \textit{crates}).
+			\item \textbf{Rustfmt y Clippy:} Herramientas nativas para formatear el código y analizar errores comunes o malas prácticas (linter).
+		\end{itemize}
+	\end{frame}
+	
+	% --- 5. CONCLUSIÓN ---
+	\section{Conclusión}
+	\begin{frame}{¿Por qué elegir Rust?}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Ventajas}
+			\begin{itemize}
+				\item Rendimiento extremo (similar a C++).
+				\item Seguridad de memoria garantizada en tiempo de compilación.
+				\item Concurrencia sin miedo.
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Desafíos}
+			\begin{itemize}
+				\item Curva de aprendizaje empinada.
+				\item Tiempos de compilación más lentos.
+				\item El compilador es muy estricto (te obligará a escribir código seguro).
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}[plain]
+		\centering
+		\Huge \textbf{¡Gracias!} \\
+		\vspace{1cm}
+		\Large ¿Preguntas?
+	\end{frame}
+	
 \end{document}
