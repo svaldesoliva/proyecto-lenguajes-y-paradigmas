@@ -40,7 +40,7 @@
 
 \begin{document}
 	
-	\author[Valdés, Vásquez, Gutierrez]{Simón Valdés Oliva \and Martín Vásquez \and Alejandro Gutierrez}
+	\author[Valdés, Vásquez, Gutierrez, Opitz Ulloa]{Simón Valdés Oliva \and Martín Vásquez \and Alejandro Gutierrez \and Mathias Opitz \and Gabriel Ulloa}
 	\title[Lenguaje Rust]{Lenguaje Rust}
 	\subtitle{Lenguajes y Paradigmas de Programación}
 	\institute[UAI]{Universidad Adolfo Ibáñez}
@@ -69,24 +69,24 @@
 		
 		\vspace{0.4cm}
 		
-		Su objetivo principal es permitir escribir software de bajo nivel --- como el que se escribe en C o C++ --- pero eliminando los errores de memoria que históricamente han causado la mayoría de las vulnerabilidades de seguridad.
+		Su objetivo principal es permitir escribir software de bajo nivel, similar a C o C++, pero eliminando los errores de memoria que históricamente han causado la mayoría de las vulnerabilidades de seguridad.
 	\end{frame}
 
 	\begin{frame}{¿Qué problema viene a resolver?}
-		\begin{alertblock}{El dato clave}
-			Aproximadamente el 70\% de las vulnerabilidades de seguridad en proyectos como Chrome y Windows son errores de memoria: accesos a memoria ya liberada, punteros nulos, desbordamientos de buffer.
+		\begin{alertblock}{Gestión de memoria}
+			Aproximadamente el 70\% de las vulnerabilidades de seguridad en proyectos de software son errores de memoria.
 		\end{alertblock}
 		
 		\vspace{0.3cm}
 		
-		Antes de Rust, los desarrolladores tenían dos opciones:
+		Antes de la existencia de Rust, los desarrolladores tenían dos opciones:
 		\begin{itemize}
 			\item Usar \textbf{C o C++}: muy rápidos, pero el programador gestiona la memoria a mano y se equivoca.
-			\item Usar lenguajes con \textbf{recolector de basura} como Java o Go: más seguros, pero con pausas impredecibles en la ejecución.
+			\item Usar lenguajes con \textbf{garbage collector} como Java o Go, que son más seguros, pero con pausas impredecibles en la ejecución.
 		\end{itemize}
 		
 		\vspace{0.2cm}
-		Rust ofrece una tercera vía: \textbf{seguridad de memoria verificada por el compilador}, sin recolector de basura y con rendimiento comparable a C.
+		Rust ofrece \textbf{seguridad de memoria verificada por el compilador}, sin recolector de basura y con rendimiento comparable a C.
 	\end{frame}
 
 	% ==========================================================
@@ -95,7 +95,7 @@
 	\section{Características Principales}
 
 	\begin{frame}{¿Compilado, interpretado o híbrido?}
-		Rust es un lenguaje \textbf{compilado}. El código fuente se traduce directamente a código de máquina nativo, sin máquina virtual ni intérprete.
+		Rust es un lenguaje \textbf{compilado}. El código fuente se traduce directamente a código de máquina nativo.
 		
 		\vspace{0.4cm}
 		El proceso de compilación tiene varias etapas:
@@ -115,9 +115,10 @@
 		\vspace{0.4cm}
 		¿Qué significa esto en la práctica?
 		\begin{itemize}
-			\item Si usamos iteradores, closures o genéricos, el código compilado es igual de rápido que si lo hubiéramos escrito a mano con bucles y punteros.
-			\item A esto se le llama \textit{zero-cost abstractions}\footnote{Principio de diseño: las abstracciones de alto nivel se traducen a código de máquina igual de eficiente que si se hubiera escrito a mano en bajo nivel.}.
+			\item Si escribimos de forma no óptima, el código compilado es igual de rápido que si lo hubiéramos escrito de forma más inteligente.
+
 			\item Es lo opuesto a lo que ocurre en Java, donde las abstracciones agregan capas de indirección y consumo de memoria en tiempo de ejecución.
+
 		\end{itemize}
 	\end{frame}
 
@@ -140,13 +141,13 @@
 		\begin{itemize}
 			\item \texttt{Option<T>}: representa un valor que puede existir o no.
 				\begin{itemize}
-					\item \texttt{Some(v)} --- hay un valor.
-					\item \texttt{None} --- no hay valor.
+					\item \texttt{Some(v)} = hay un valor.
+					\item \texttt{None} = no hay valor.
 				\end{itemize}
 			\item \texttt{Result<T, E>}: representa una operación que puede salir bien o fallar.
 				\begin{itemize}
-					\item \texttt{Ok(v)} --- la operación fue exitosa.
-					\item \texttt{Err(e)} --- hubo un error.
+					\item \texttt{Ok(v)} = la operación fue exitosa.
+					\item \texttt{Err(e)} = hubo un error.
 				\end{itemize}
 		\end{itemize}
 		
@@ -154,7 +155,7 @@
 		El compilador obliga a manejar cada variante. No se puede ignorar un error.
 	\end{frame}
 
-	\begin{frame}{Gestión de memoria: Ownership\footnote{Sistema propio de Rust que establece quién ``posee'' cada dato en memoria y cuándo se libera. Reemplaza tanto al \texttt{free()} manual de C como al recolector de basura de Java.}}
+	\begin{frame}{Gestión de memoria: Ownership}
 		Esta es la innovación más importante de Rust. Permite gestionar la memoria \textbf{sin recolector de basura} y sin que el programador la libere manualmente.
 		
 		\vspace{0.4cm}
@@ -169,10 +170,10 @@
 	\end{frame}
 
 	\begin{frame}{Borrowing: prestar sin regalar}
-		Rust permite \textbf{prestar} valores sin transferir la propiedad\footnote{A esto se le llama \textit{borrowing}: crear una referencia temporal a un dato. Mientras alguien lo ``lee'', nadie puede modificarlo, y viceversa.}.
+		Rust permite \textbf{prestar} valores sin transferir la propiedad\footnote{Crear una referencia temporal a un dato. Mientras alguien lo lee, nadie puede modificarlo, y viceversa.}.
 		
 		\vspace{0.4cm}
-		La regla es simple:
+
 		\begin{itemize}
 			\item Se puede tener \textbf{múltiples lectores} al mismo tiempo.
 			\item O \textbf{un solo escritor}.
@@ -184,7 +185,7 @@
 	\end{frame}
 
 	\begin{frame}[fragile]{Manejo de errores}
-		Rust \textbf{no tiene excepciones}. Los errores se representan como valores que el programador debe manejar explícitamente:
+		Rust \textbf{no tiene exceptions}. Los errores se representan como valores que el programador debe manejar explícitamente:
 		\begin{lstlisting}[style=rust]
 use std::fs;
 
@@ -213,14 +214,14 @@ fn main() {
 		Rust es un lenguaje \textbf{multiparadigma}. Combina elementos de:
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item \textbf{Paradigma imperativo:} variables mutables, bucles, control de flujo secuencial. El programador describe \textit{cómo} resolver el problema.
-			\item \textbf{Paradigma funcional:} funciones como valores, inmutabilidad por defecto, encadenamiento de operaciones sin efectos secundarios.
-			\item \textbf{Paradigma orientado a objetos (parcial):} permite encapsular datos y comportamiento con \texttt{struct} e \texttt{impl}, y definir interfaces con \texttt{trait}\footnote{Similar a una interfaz en Java: define un contrato de métodos que distintos tipos pueden implementar. Rust usa traits en vez de herencia para lograr polimorfismo.}. Pero no tiene herencia de clases. En su lugar, favorece la composición.
+			\item \textbf{Paradigma imperativo:} variables mutables, bucles, control de flujo secuencial.
+			\item \textbf{Paradigma funcional:} funciones como valores, inmutabilidad por defecto, encadenamiento de operaciones.
+			\item \textbf{Paradigma orientado a objetos *:} permite encapsular datos y comportamiento con \texttt{struct} e \texttt{impl}, y definir interfaces con \texttt{trait}\footnote{Similar a una interfaz en Java: define un contrato de métodos que distintos tipos pueden implementar. Rust usa traits en vez de herencia para lograr polimorfismo.}. Pero no tiene herencia de clases. En su lugar, favorece la composición.
 		\end{itemize}
 	\end{frame}
 	
 	\begin{frame}[fragile]{Ejemplo: paradigma imperativo}
-		El estilo clásico --- variables mutables, bucles, asignación directa:
+		Operación: $\sum_{i=1}^{10}i$. Muy similar a C.
 		\begin{lstlisting}[style=rust]
 fn main() {
     let mut suma = 0;
@@ -231,17 +232,17 @@ fn main() {
 }
 		\end{lstlisting}
 		
-		Nótese que la variable \texttt{suma} debe marcarse explícitamente como \texttt{mut}. En Rust, las variables son \textbf{inmutables por defecto}. Si queremos modificar un valor, debemos declararlo.
+		Notar que la variable \texttt{suma} debe marcarse explícitamente como \texttt{mut}. En Rust, las variables son \textbf{inmutables por defecto}. 
 	\end{frame}
 
 	\begin{frame}[fragile]{Ejemplo: paradigma funcional}
-		Iteradores, closures\footnote{Son funciones anónimas, equivalentes a las expresiones lambda de Haskell. En Rust se escriben con la sintaxis \texttt{|args| cuerpo}.} y encadenamiento de operaciones:
+		Iteradores, closures\footnote{Equivalentes a las funciones lambda de Haskell. En Rust se escriben con la sintaxis \texttt{|args| cuerpo}.} y encadenamiento de operaciones:
 		\begin{lstlisting}[style=rust]
 fn main() {
     let numeros = vec![1, 2, 3, 4, 5, 6];
 
     let pares_dobles: Vec<i32> = numeros.iter()
-        .filter(|&&x| x % 2 == 0)  // conservar solo pares
+        .filter(|&&x| x % 2 == 0)  // solo para pares
         .map(|&x| x * 2)           // multiplicar por 2
         .collect();                 // juntar resultados
 
@@ -249,7 +250,7 @@ fn main() {
 }
 		\end{lstlisting}
 		
-		No hay bucles, no hay variables mutables. Se describe \textit{qué} se quiere obtener, no \textit{cómo} paso a paso. Las funciones \texttt{filter} y \texttt{map} reciben funciones anónimas como argumento.
+		Se describe qué se quiere obtener, no cómo paso a paso. Las funciones \texttt{filter} y \texttt{map} reciben funciones anónimas como argumento.
 	\end{frame}
 
 	\begin{frame}[fragile]{Ejemplo: orientación a objetos con Traits}
@@ -285,12 +286,12 @@ impl Describible for Gato {
 		Una de las fortalezas de Rust es que sus herramientas vienen integradas desde el primer día:
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item \textbf{Cargo:} el gestor de paquetes y sistema de compilación. Un solo comando para compilar, correr tests y generar documentación.
+			\item \textbf{Cargo:} gestor de paquetes y sistema de compilación.
 			\item \textbf{Crates.io:} el registro público de paquetes\footnote{En Rust, los paquetes se llaman \textit{crates}. Es el equivalente a los paquetes de npm en JavaScript o pip en Python.}. Tiene más de 150.000 bibliotecas disponibles.
 			\item \textbf{Rustfmt:} formatea el código automáticamente siguiendo las convenciones oficiales.
 			\item \textbf{Clippy:} un analizador estático\footnote{Herramienta que revisa el código fuente sin ejecutarlo, buscando patrones que suelen causar errores o que podrían escribirse de forma más clara.} que detecta errores comunes y sugiere mejores prácticas.
 			\item \textbf{Rustdoc:} genera documentación HTML directamente desde los comentarios del código.
-			\item \textbf{rust-analyzer:} servidor de lenguaje para editores como VS Code.
+			\item \textbf{rust-analyzer:} servidor de lenguaje para editores de código.
 		\end{itemize}
 	\end{frame}
 
@@ -301,24 +302,24 @@ impl Describible for Gato {
 
 	\begin{frame}{Los principios detrás de Rust}
 		\begin{block}{Principio central}
-			``Si compila, funciona.'' La comunidad de Rust confía en que el compilador atrapa la mayoría de los errores antes de ejecutar el programa.
+			La comunidad de Rust confía en que el compilador atrapa la mayoría de los errores antes de ejecutar el programa. Si compila funciona, básicamente.
 		\end{block}
 		
 		\vspace{0.3cm}
 		Los pilares que guían el diseño del lenguaje son:
 		\begin{itemize}
-			\item \textbf{La seguridad no es opcional.} El compilador actúa como un guardián: no permite compilar código con errores de memoria.
-			\item \textbf{Las abstracciones no deben costar rendimiento.} Lo que se escribe de forma elegante debe ejecutarse igual de rápido que lo escrito a mano.
+			\item \textbf{Seguridad:} El compilador no permite compilar código con errores de memoria.
+			\item \textbf{Las abstracciones no deben costar rendimiento.} Lo que se escribe de forma elegante debe ejecutarse igual de rápido que lo escrito ``spaghetti''.
 			\item \textbf{Lo explícito es mejor que lo implícito.} No hay conversiones de tipo automáticas, no hay null, no hay excepciones que puedan pasar desapercibidas.
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}{¿Qué es código ``rustáceo''?}
-		Así como en Python se habla de código ``pythónico'', en Rust se habla de código \textbf{rustáceo} o \textit{idiomatic Rust}. Es código que aprovecha las herramientas del lenguaje de la forma en que fueron pensadas.
+	Es código que aprovecha las herramientas del lenguaje de la forma en que fueron pensadas.
 		\vspace{0.2cm}
 		\begin{columns}
 			\column{0.5\textwidth}
-			\textbf{Sí es rustáceo:}
+			\textbf{Sí es:}
 			\begin{itemize}
 				\item Usar \texttt{Option} y \texttt{Result} para representar ausencia de valor y errores.
 				\item Usar iteradores en vez de bucles con índice.
@@ -327,7 +328,7 @@ impl Describible for Gato {
 			\end{itemize}
 			
 			\column{0.5\textwidth}
-			\textbf{No es rustáceo:}
+			\textbf{No es:}
 			\begin{itemize}
 				\item Usar \texttt{.unwrap()} en código de producción, porque ignora el error.
 				\item Usar \texttt{unsafe}\footnote{Bloque especial de Rust que desactiva las verificaciones del borrow checker. Se usa solo cuando es estrictamente necesario, por ejemplo, para interactuar con código C.} sin una razón clara.
@@ -340,16 +341,16 @@ impl Describible for Gato {
 	% ==========================================================
 	% 6. ANÁLISIS SEGÚN SEBESTA
 	% ==========================================================
-	\section{Análisis según Sebesta (2016)}
+	\section{Análisis según Sebesta}
 
 	\begin{frame}{Los cuatro criterios de Sebesta}
 		Sebesta propone cuatro criterios para evaluar un lenguaje de programación. A continuación analizamos Rust según cada uno.
 		\vspace{0.3cm}
 		\begin{enumerate}
-			\item \textbf{Legibilidad} --- ¿es fácil leer y entender el código?
-			\item \textbf{Facilidad de escritura} --- ¿es fácil escribir programas?
-			\item \textbf{Confiabilidad} --- ¿el programa hace lo que debería en todas las condiciones?
-			\item \textbf{Costo} --- ¿cuánto cuesta aprender, compilar, ejecutar y mantener el lenguaje?
+			\item \textbf{Legibilidad} : ¿es fácil leer y entender el código?
+			\item \textbf{Facilidad de escritura} : ¿es fácil escribir programas?
+			\item \textbf{Confiabilidad} : ¿el programa hace lo que debería en todas las condiciones?
+			\item \textbf{Costo} : ¿cuánto cuesta aprender, compilar, ejecutar y mantener el lenguaje?
 		\end{enumerate}
 	\end{frame}
 
@@ -368,7 +369,6 @@ impl Describible for Gato {
 			\textbf{En contra:}
 			\begin{itemize}
 				\item La sintaxis de \textit{lifetimes}\footnote{Anotaciones que el programador agrega para indicarle al compilador cuánto tiempo debe vivir una referencia. Se escriben como \texttt{'a} y aparecen en funciones que reciben o retornan referencias.} puede ser difícil de leer, especialmente en funciones con múltiples referencias.
-				\item Los genéricos con muchas restricciones generan firmas de función largas.
 				\item Para un principiante, leer código con \texttt{<'a, T: Display + Clone>} puede ser intimidante.
 			\end{itemize}
 		\end{columns}
@@ -382,14 +382,13 @@ impl Describible for Gato {
 				\item Los genéricos y traits permiten escribir código reutilizable.
 				\item Las closures y los iteradores hacen que muchas operaciones se expresen en pocas líneas.
 				\item El operador \texttt{?} permite propagar errores de forma limpia, sin llenar el código de \texttt{match}.
-				\item El sistema de macros permite generar código repetitivo automáticamente.
 			\end{itemize}
 			
 			\column{0.5\textwidth}
 			\textbf{En contra:}
 			\begin{itemize}
 				\item El borrow checker rechaza código que lógicamente es correcto pero que no puede verificar. Esto obliga a reestructurar el programa.
-				\item Al principio, el programador ``pelea'' con el compilador.
+				\item Al principio, el programador pelea con el compilador.
 				\item Escribir la primera versión de un programa toma más tiempo que en Python o Go.
 			\end{itemize}
 		\end{columns}
@@ -397,35 +396,32 @@ impl Describible for Gato {
 
 	\begin{frame}{Confiabilidad}
 		Este es el criterio donde Rust más destaca.
-		\vspace{0.2cm}
-		\begin{columns}
-			\column{0.5\textwidth}
+
+
+
 			\textbf{Verificación de tipos:}
 			\begin{itemize}
 				\item Todo se verifica antes de ejecutar.
 				\item El borrow checker detecta errores de memoria en compilación.
 				\item No existe null. Si un valor puede estar ausente, el tipo lo dice explícitamente.
 			\end{itemize}
-			\vspace{0.2cm}
+
 			\textbf{Manejo de errores:}
 			\begin{itemize}
 				\item Los errores son valores, no excepciones.
 				\item El compilador obliga a manejarlos.
 			\end{itemize}
 			
-			\column{0.5\textwidth}
+
 			\textbf{Control de aliasing:}
 			\begin{itemize}
 				\item En cualquier momento, un dato puede tener varios lectores o un solo escritor, pero nunca ambos.
 				\item Esto elimina accesos conflictivos a memoria por diseño.
 			\end{itemize}
 
-			\vspace{0.3cm}
-			\begin{block}{Resultado}
-				"Si compila, funciona" no es solo un eslogan. Es una consecuencia directa de las garantías del compilador.
-			\end{block}
+
 					
-		\end{columns}
+
 
 	\end{frame}
 
@@ -434,18 +430,18 @@ impl Describible for Gato {
 			\column{0.5\textwidth}
 			\textbf{Costos altos:}
 			\begin{itemize}
-				\item \textbf{Aprendizaje:} la curva es pronunciada. Ownership, lifetimes y el borrow checker requieren un cambio de mentalidad.
-				\item \textbf{Compilación:} más lenta que C o Go, porque el compilador hace un análisis profundo.
-				\item \textbf{Tiempo de desarrollo inicial:} el compilador rechaza mucho código al principio.
+				\item \textbf{Aprendizaje:} la curva es pronunciada, el compilador rechaza mucho código al principio.
+				\item \textbf{Compilación:} más lenta que C, ya que el compilador hace un análisis profundo.
+
 			\end{itemize}
 			
 			\column{0.5\textwidth}
 			\textbf{Costos bajos:}
 			\begin{itemize}
-				\item \textbf{Ejecución:} rendimiento comparable a C y C++, sin recolector de basura.
+				\item \textbf{Ejecución:} rendimiento similar a C.
 				\item \textbf{Mantenimiento:} los refactorizaciones son seguras. Si el código sigue compilando, probablemente sigue funcionando.
-				\item \textbf{Herramientas:} Cargo, Clippy y rustfmt son gratuitos y de excelente calidad.
 				\item \textbf{Bugs en producción:} menos errores de memoria implica menos costo de debugging.
+				\item \textbf{Open-source}
 			\end{itemize}
 		\end{columns}
 	\end{frame}
@@ -459,7 +455,7 @@ impl Describible for Gato {
 		¿Por qué?
 		\begin{itemize}
 			\item El 70\% de las vulnerabilidades en sistemas grandes son errores de memoria.
-			\item Un lenguaje que garantiza seguridad de memoria en compilación --- como Rust --- no puede evaluarse adecuadamente solo con el criterio de ``confiabilidad''.
+			\item Un lenguaje que garantiza seguridad de memoria en compilación no puede evaluarse adecuadamente solo con el criterio de confiabilidad.
 			\item Sub-criterios posibles: seguridad de memoria, prevención de accesos conflictivos, y cómo el lenguaje aísla el código que sí accede a memoria sin restricciones (en Rust, los bloques \texttt{unsafe}).
 		\end{itemize}
 	\end{frame}
@@ -469,104 +465,72 @@ impl Describible for Gato {
 	% ==========================================================
 	\section{Casos de Uso}
 
-	\begin{frame}{¿Dónde se usa Rust hoy?}
-		Rust dejó de ser un lenguaje experimental. Hoy es infraestructura crítica de algunas de las empresas más grandes del mundo.
-		
-		\vspace{0.3cm}
-		Se usa principalmente en:
-		\begin{columns}
-			\column{0.5\textwidth}
+	\begin{frame}{Rust hoy}
+		Rust se usa principalmente en:
+
+
 			\begin{itemize}
 				\item Kernels y sistemas operativos
-				\item Infraestructura cloud y serverless\footnote{Modelo de computación en la nube donde el proveedor ejecuta el código del usuario sin que este administre servidores. Ejemplos: AWS Lambda, Cloudflare Workers.}
 				\item Aplicaciones de escritorio nativas
-			\end{itemize}
-			\column{0.5\textwidth}
-			\begin{itemize}
+
+
+
 				\item Seguridad y criptografía
-				\item WebAssembly\footnote{Formato binario que permite ejecutar código compilado dentro del navegador web con rendimiento cercano al nativo.}
 				\item Backends web de alto rendimiento
 			\end{itemize}
-		\end{columns}
+
 	\end{frame}
 
 	\begin{frame}{Linux Kernel}
-		\begin{block}{Estado actual}
-			Desde diciembre de 2025, Rust es un \textbf{lenguaje oficial} dentro del kernel de Linux. Ya no se considera experimental.
+		\begin{block}{Linux 7.0}
+			Desde diciembre de 2025, Rust es un \textbf{lenguaje oficial} dentro del kernel de Linux.
 		\end{block}
 		
 		\vspace{0.3cm}
 		\begin{itemize}
-			\item Hay drivers escritos en Rust en producción: controladores de red, el driver Android Binder, y drivers de GPU como el Apple AGX y el NVIDIA Nova.
+			\item Hay drivers escritos en Rust, como controladores de red, el driver Android Binder, y drivers de GPU como el Apple AGX y el NVIDIA Nova.
 			\item La motivación es que los wrappers en Rust previenen errores típicos del código C, como acceder a memoria ya liberada o desreferenciar punteros nulos.
-			\item Son aproximadamente 25.000 líneas de Rust sobre 34 millones de líneas de C. Poco código, pero colocado en puntos estratégicos.
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}{Tauri: apps de escritorio}
-		Tauri es un framework para crear aplicaciones de escritorio multiplataforma. Es la alternativa moderna a Electron.
+		Tauri es un framework para crear aplicaciones de escritorio multiplataforma. Es la alternativa moderna a Electron\footnote{Usar tecnología web para programas de escritorio. Ej: VSCode, Discord, WhatsApp}.
 		
-		\vspace{0.2cm}
-		\begin{columns}
-			\column{0.55\textwidth}
+
 			¿Cómo funciona?
 			\begin{itemize}
-				\item La interfaz se construye con tecnologías web: React, Svelte o Vue.
+				\item La UI se construye con tecnologías web.
 				\item El backend se escribe en Rust.
-				\item En vez de empaquetar un navegador Chromium completo, Tauri usa el visor web que ya trae el sistema operativo.
-				\item El resultado: aplicaciones hasta \textbf{10 veces más pequeñas} que las de Electron.
+				\item No se usa un navegador Chromium completo. Tauri usa el WebView que ya trae el sistema operativo.
 			\end{itemize}
-			\column{0.45\textwidth}
-			Comparación de tamaño:
-			\begin{itemize}
-				\item Electron: aproximadamente 85 MB mínimo.
-				\item Tauri: entre 3 y 8 MB por aplicación.
-			\end{itemize}
-			\vspace{0.2cm}
-			Tauri 2.0 también soporta Android e iOS.
-		\end{columns}
+
+		Esto significa tener aplicaciones que consumen muchísimos menos recursos.
+
+
 	\end{frame}
 
-	\begin{frame}{Android y AWS}
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{Android}
+	\begin{frame}{Android}
+
+
+
 			\begin{itemize}
 				\item Google adoptó Rust como parte de su estrategia de seguridad.
 				\item Las vulnerabilidades de memoria cayeron por debajo del 20\% del total por primera vez en la historia de Android.
 				\item El código Rust requiere un 25\% menos de tiempo en revisión de código y tiene cuatro veces menos tasa de reversión que el código equivalente en C++.
 			\end{itemize}
 			
-			\column{0.5\textwidth}
-			\textbf{AWS --- Firecracker}
-			\begin{itemize}
-				\item Es el motor de virtualización que potencia AWS Lambda y AWS Fargate.
-				\item Está escrito completamente en Rust.
-				\item Puede iniciar máquinas virtuales ligeras en menos de 125 milisegundos.
-			\end{itemize}
-		\end{columns}
+
 	\end{frame}
 
-	\begin{frame}{Cloudflare, Discord y otros}
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{Cloudflare --- Pingora}
+	\begin{frame}{Discord}
+
 			\begin{itemize}
-				\item Reemplazaron toda su infraestructura de proxy, que estaba escrita en C, por una nueva versión en Rust.
-				\item Procesa millones de solicitudes por segundo en producción.
-				\item También ofrecen Rust como lenguaje en Cloudflare Workers, su plataforma de ejecución en la nube.
-			\end{itemize}
-			
-			\column{0.5\textwidth}
-			\textbf{Discord}
-			\begin{itemize}
-				\item Migraron partes críticas de su backend de Go a Rust.
+				\item Migraron partes esenciales de su backend de Go a Rust.
 				\item El problema era que el recolector de basura de Go generaba picos de latencia inaceptables.
 				\item Con Rust obtuvieron latencias predecibles y menor uso de memoria.
 			\end{itemize}
-		\end{columns}
+
 		
-		\vspace{0.3cm}
 		\textbf{Otros:} Microsoft lo usa en el kernel de Windows, Mozilla en Firefox, Meta en su infraestructura, Dropbox en su motor de sincronización, GitHub en su buscador de código.
 	\end{frame}
 
@@ -580,7 +544,7 @@ impl Describible for Gato {
 			\column{0.5\textwidth}
 			\textbf{Ventajas}
 			\begin{itemize}
-				\item Rendimiento comparable a C y C++.
+				\item Rendimiento similar a C y C++.
 				\item Seguridad de memoria garantizada por el compilador.
 				\item Ecosistema moderno y bien integrado.
 				\item Adopción creciente en la industria.
@@ -589,17 +553,12 @@ impl Describible for Gato {
 			\column{0.5\textwidth}
 			\textbf{Desafíos}
 			\begin{itemize}
-				\item Curva de aprendizaje pronunciada.
+				\item Alta curva de aprendizaje.
 				\item Compilación más lenta que otros lenguajes.
 				\item El borrow checker puede ser frustrante al principio.
-				\item Algunas áreas del ecosistema aún están madurando.
 			\end{itemize}
 		\end{columns}
-		
-		\vspace{0.3cm}
-		\begin{alertblock}{El trade-off fundamental}
-			Rust sacrifica facilidad de escritura a cambio de máxima confiabilidad. Los errores se pagan en tiempo de compilación, no en producción.
-		\end{alertblock}
+
 	\end{frame}
 
 	% --- REFERENCIAS ---
@@ -611,15 +570,6 @@ impl Describible for Gato {
 			\bibitem{rustref} The Rust Reference. \texttt{https://doc.rust-lang.org/reference/}
 			\bibitem{google} Google Security Blog (2024). \textit{Eliminating Memory Safety Vulnerabilities at the Source}.
 		\end{thebibliography}
-	\end{frame}
-
-	\begin{frame}[plain]
-		\centering
-		\Huge \bfseries ¿Preguntas?
-		
-		\vspace{1cm}
-		\normalsize
-		\textit{Gracias por su atención}
 	\end{frame}
 	
 \end{document}
