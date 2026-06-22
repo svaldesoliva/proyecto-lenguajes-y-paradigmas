@@ -1,6 +1,7 @@
 *.pdf
 .DS_Store
-
+*.wav
+/proyectoLYP/target
 /latex/document.aux
 /latex/document.log
 /latex/document.out

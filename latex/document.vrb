@@ -1,0 +1,22 @@
+\frametitle{Ejemplo: orientación a objetos con Traits}
+Rust logra polimorfismo sin herencia, usando \textit{traits}:
+		\begin{lstlisting}[style=rust]
+trait Describible {
+    fn describir(&self) -> String;
+}
+
+struct Perro { nombre: String }
+struct Gato { nombre: String }
+
+impl Describible for Perro {
+    fn describir(&self) -> String {
+        format!("Perro: {}", self.nombre)
+    }
+}
+impl Describible for Gato {
+    fn describir(&self) -> String {
+        format!("Gato: {}", self.nombre)
+    }
+}
+		\end{lstlisting}
+		Tanto \texttt{Perro} como \texttt{Gato} implementan la misma interfaz, pero cada uno define su propio comportamiento. No hay clase padre.
