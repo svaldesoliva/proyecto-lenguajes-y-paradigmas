@@ -1,6 +1,8 @@
 // Proyecto Lenguajes y Paradigmas
-// Procesamiento de audio mediante Transformada de Fourier (FFT)
-// Funcional + Imperativo + Modular
+// Procesamiento de audio mediante Transformada de Fourier (FFT).
+// Este programa toma un archivo WAV y genera versiones comprimidas conservando
+// solo las N frecuencias de mayor energía y descartando las demás.
+// Demuestra un enfoque funcional (iteradores, map/collect) combinado con imperativo (loops de escritura).
 
 mod audio;
 
@@ -8,15 +10,16 @@ use std::env;
 use hound::{WavReader, WavWriter};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Lectura de argumentos de la terminal
-    let args: Vec<String> = env::args().collect();
+    // Argumentos que el usuario pasó por la terminal (el primero siempre es el nombre del programa)
+    let argumentos: Vec<String> = env::args().collect();
     
-    if args.len() < 2 {
-        eprintln!("Uso: {} <archivo.wav>", args[0]);
+    if argumentos.len() < 2 {
+        eprintln!("Uso: {} <archivo.wav>", argumentos[0]);
         std::process::exit(1);
     }
     
-    let archivo_entrada = &args[1];
+    // Ruta del archivo WAV que queremos procesar
+    let archivo_entrada = &argumentos[1];
 
     if !std::path::Path::new(archivo_entrada).exists() {
         eprintln!("Error: No se encontró el archivo '{}'.", archivo_entrada);
@@ -25,32 +28,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("Cargando archivo {}...", archivo_entrada);
     
-    let mut reader = WavReader::open(archivo_entrada)?;
-    let spec = reader.spec();
+    // Lector del archivo WAV; nos da acceso a las muestras y a la configuración del audio
+    let mut lector = WavReader::open(archivo_entrada)?;
     
-    // Leemos los valores del audio original (están en enteros i16) 
-    // y los transformamos a f32 (decimales) para poder procesarlos.
-    let samples: Vec<f32> = reader.samples::<i16>()
-        .map(|s| s.map(|val| val as f32))
+    // Configuración del audio original: sample rate, número de canales, bits por muestra, etc.
+    // La guardamos para poder escribir los archivos de salida con las mismas propiedades.
+    let config_audio = lector.spec();
+    
+    // Las muestras originales vienen en enteros i16 (rango -32768 a 32767).
+    // Las convertimos a f32 para poder hacer operaciones matemáticas (FFT, normalización)
+    // sin perder precisión en los cálculos intermedios.
+    let muestras: Vec<f32> = lector.samples::<i16>()
+        .map(|s| s.map(|valor| valor as f32))
         .collect::<Result<Vec<f32>, _>>()?;
 
-    let frecuencias = [5, 500, 1500, 5000, 15000, 30000, 50000, 100000, 300000, 1000000];
+    // Distintos niveles de compresión que vamos a probar.
+    // Cada número indica cuántas frecuencias conservamos
+    let niveles_compresion = [5, 500, 1500, 5000, 15000, 30000, 50000, 100000, 300000, 1000000];
 
-    for &i in &frecuencias {
-        println!("Recreando audio conservando sólo el top {} de frecuencias...", i);
+    for &n_frecuencias in &niveles_compresion {
+        println!("Recreando audio conservando sólo el top {} de frecuencias...", n_frecuencias);
         
-        let reconstruido = audio::procesar_canales(&samples, spec.channels, i);
+        // Audio reconstruido tras aplicar el filtro FFT con este nivel de compresión
+        let audio_reconstruido = audio::procesar_canales(&muestras, config_audio.channels, n_frecuencias);
         
-        let salida = format!("output_top_{}.wav", i);
+        // Nombre del archivo de salida para este nivel de compresión
+        let nombre_salida = format!("output_top_{}.wav", n_frecuencias);
 
-        // escribir archivo con wavwriter
-        let mut writer = WavWriter::create(&salida, spec)?;
-        for &sample in &reconstruido {
-            writer.write_sample(sample.round() as i16)?;
+        // Escribimos el resultado en un nuevo WAV con la misma configuración que el original
+        // (mismo sample rate, mismos canales) para que sea reproducible sin cambios.
+        let mut escritor = WavWriter::create(&nombre_salida, config_audio)?;
+        for &muestra in &audio_reconstruido {
+            // Redondeamos de vuelta a i16 antes de escribir, ya que el formato WAV lo requiere
+            escritor.write_sample(muestra.round() as i16)?;
         }
-        writer.finalize()?;
+        escritor.finalize()?;
         
-        println!("Guardado: {}", salida);
+        println!("Guardado: {}", nombre_salida);
     }
     
     println!("Terminado.");

@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 hound = "3.5.1"
 rustfft = "6.2.0"
+# https://crates.io/crates/hound
+# https://crates.io/crates/rustfft
