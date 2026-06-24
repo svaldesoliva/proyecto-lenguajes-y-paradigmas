@@ -99,7 +99,8 @@ pub fn procesar_canales(muestras: &[f32], canales_totales: u16, frecuencias_a_ma
             audio_entrelazado.push(canal[indice_fotograma]);
         }
     }
-    
+
+
     // Después del filtrado el volumen puede quedar muy bajo (muchas frecuencias silenciadas).
     // Normalizamos llevando la muestra de mayor amplitud absoluta a 30000, que está cerca
     // del techo de i16 (32767) pero deja un pequeño margen para evitar clipping.
